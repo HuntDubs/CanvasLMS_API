@@ -37,7 +37,7 @@ const SignInScreen = ({navigation}) => {
 }
 
 const CanvasWebScreen = ({naviagtion}) => {
-  authURL = 'https://login.ku.edu/login/oauth2/auth?client_id=19132~xIlMUq617UTOBA77teuBSUB9xR8YsvprRlh2pEC7LfuWvxOvytrTI49YDn7Hg0U0&response_type=code&redirect_uri=/login/oauth2/auth?code=';
+  const authURL = 'https://login.ku.edu/login/oauth2/auth?client_id=XXX&response_type=code&redirect_uri=https://example.com/oauth_complete&state=YYY&scope=<value_1>%20<value_2>%20<value_n>';
   return (
     <WebView source={{ uri: authURL }}  />
   );
