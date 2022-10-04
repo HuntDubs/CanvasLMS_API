@@ -1,10 +1,63 @@
-import { StatusBar } from 'expo-status-bar';
-import * as React from 'react';
-import { useState } from 'react';
-import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+//import * as React from 'react';
+import React, { Component } from 'react';
+//import { useState } from 'react';
+import { Button, StyleSheet, Text, View, LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {WebView} from 'react-native-webview';
+
+
+class MyWeb extends Component {
+  webview = null;
+  authURL = 'https://login.ku.edu/login/oauth2/auth?client_id=XXX&response_type=code&redirect_uri=https://example.com/oauth_complete&state=YYY&scope=<value_1>%20<value_2>%20<value_n>';
+  successURL = 'https://example.com/oauth_complete&state=YYY&scope=<value_1>%20<value_2>%20<value_n>';
+
+  render() {
+    return (
+      <WebView
+        ref={(ref) => (this.webview = ref)}
+        source={{ uri: this.authURL }}
+        onNavigationStateChange={this.handleWebViewNavigationStateChange}
+      />
+    );
+  }
+
+  handleWebViewNavigationStateChange = (newNavState) => {
+    // newNavState looks something like this:
+    // {
+    //   url?: string;
+    //   title?: string;
+    //   loading?: boolean;
+    //   canGoBack?: boolean;
+    //   canGoForward?: boolean;
+    // }
+    const { url } = newNavState;
+    if (!url) return;
+
+    // handle certain doctypes
+    if (url.includes(this.successURL)) {
+      naviagtion.navigate('Profile');
+    }
+
+    // one way to handle a successful form submit is via query strings
+    if (url.includes('?message=success')) {
+      this.webview.stopLoading();
+      // maybe close this view?
+    }
+
+    // one way to handle errors is via query string
+    if (url.includes('?errors=true')) {
+      this.webview.stopLoading();
+    }
+
+    // redirect somewhere else
+    if (url.includes('google.com')) {
+      const newURL = 'https://reactnative.dev/';
+      const redirectTo = 'window.location = "' + newURL + '"';
+      this.webview.injectJavaScript(redirectTo);
+    }
+  };
+}
 
 
 //Commented out sections from a scrapped email and password sign-in screen. Pretty sure that will not be needed
@@ -36,13 +89,6 @@ const SignInScreen = ({navigation}) => {
   );
 }
 
-const CanvasWebScreen = ({naviagtion}) => {
-  const authURL = 'https://login.ku.edu/login/oauth2/auth?client_id=XXX&response_type=code&redirect_uri=https://example.com/oauth_complete&state=YYY&scope=<value_1>%20<value_2>%20<value_n>';
-  return (
-    <WebView source={{ uri: authURL }}  />
-  );
-}
-
 const ProfileScreen = ({naviagtion, route}) => {
   return(
     <View style ={styles.container}>
@@ -63,7 +109,7 @@ function App() {
           component={SignInScreen}
           options={{ title: 'Welcome' }}
         />
-        <Stack.Screen name="CanvasWebSignIn" component={CanvasWebScreen} />
+        <Stack.Screen name="CanvasWebSignIn" component={MyWeb} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
