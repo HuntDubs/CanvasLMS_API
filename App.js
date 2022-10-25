@@ -5,7 +5,18 @@ import { Button, StyleSheet, Text, View, LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {WebView} from 'react-native-webview';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+
+class MyTokenSignIn extends Component {
+  render() {
+    return(
+      <View style={styles.container} >
+        <Text>Made it here.</Text>
+      </View>
+    );
+  }
+}
 
 class MyWeb extends Component {
   webview = null;
@@ -17,47 +28,50 @@ class MyWeb extends Component {
       <WebView
         ref={(ref) => (this.webview = ref)}
         source={{ uri: this.authURL }}
-        onNavigationStateChange={this.handleWebViewNavigationStateChange}
+        //onNavigationStateChange={this.handleWebViewNavigationStateChange}
       />
     );
   }
 
-  handleWebViewNavigationStateChange = (newNavState) => {
-    // newNavState looks something like this:
-    // {
-    //   url?: string;
-    //   title?: string;
-    //   loading?: boolean;
-    //   canGoBack?: boolean;
-    //   canGoForward?: boolean;
-    // }
-    const { url } = newNavState;
-    if (!url) return;
+    /*
+      !!!! This was going to be used for the developer key. On backorder for now. !!!!!!
+    */
+//   handleWebViewNavigationStateChange = (newNavState) => {
+//     // newNavState looks something like this:
+//     // {
+//     //   url?: string;
+//     //   title?: string;
+//     //   loading?: boolean;
+//     //   canGoBack?: boolean;
+//     //   canGoForward?: boolean;
+//     // }
+//     const { url } = newNavState;
+//     if (!url) return;
 
-    // handle certain doctypes
-    if (url.includes(this.successURL)) {
-      naviagtion.navigate('Profile');
-    }
+//     // handle certain doctypes
+//     if (url.includes(this.successURL)) {
+//       naviagtion.navigate('Profile');
+//     }
 
-    // one way to handle a successful form submit is via query strings
-    if (url.includes('?message=success')) {
-      this.webview.stopLoading();
-      // maybe close this view?
-    }
+//     // one way to handle a successful form submit is via query strings
+//     if (url.includes('?message=success')) {
+//       this.webview.stopLoading();
+//       // maybe close this view?
+//     }
 
-    // one way to handle errors is via query string
-    if (url.includes('?errors=true')) {
-      this.webview.stopLoading();
-    }
+//     // one way to handle errors is via query string
+//     if (url.includes('?errors=true')) {
+//       this.webview.stopLoading();
+//     }
 
-    // redirect somewhere else
-    if (url.includes('google.com')) {
-      const newURL = 'https://reactnative.dev/';
-      const redirectTo = 'window.location = "' + newURL + '"';
-      this.webview.injectJavaScript(redirectTo);
-    }
-  };
-}
+//     // redirect somewhere else
+//     if (url.includes('google.com')) {
+//       const newURL = 'https://reactnative.dev/';
+//       const redirectTo = 'window.location = "' + newURL + '"';
+//       this.webview.injectJavaScript(redirectTo);
+//     }
+//   };
+ }
 
 
 //Commented out sections from a scrapped email and password sign-in screen. Pretty sure that will not be needed
@@ -84,7 +98,7 @@ const SignInScreen = ({navigation}) => {
           onChangeText={ (clientSecret) => setClientSecret(clientSecret)}
         />
       </View> */}
-      <Button title="Sign in" onPress={() => navigation.navigate('CanvasWebSignIn')} />
+      <Button title="Sign in" onPress={() => navigation.navigate('CanvasPersonalSignIn')} />
     </View>
   );
 }
@@ -99,6 +113,16 @@ const ProfileScreen = ({naviagtion, route}) => {
 }
 
 const Stack = createNativeStackNavigator();
+const tab = createBottomTabNavigator();
+
+function Tabs() {
+  return(
+    <NavigationContainer>
+      <tab.Navigator>
+      </tab.Navigator>
+    </NavigationContainer>
+  );
+}
 
 function App() {
   return (
@@ -110,6 +134,7 @@ function App() {
           options={{ title: 'Welcome' }}
         />
         <Stack.Screen name="CanvasWebSignIn" component={MyWeb} />
+        <Stack.Screen name="CanvasPersonalSignIn" component={MyTokenSignIn} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
