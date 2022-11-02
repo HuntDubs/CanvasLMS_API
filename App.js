@@ -1,11 +1,13 @@
 //import * as React from 'react';
 import React, { Component } from 'react';
-//import { useState } from 'react';
-import { Button, StyleSheet, Text, View, LogBox } from 'react-native';
+import { useState, useEffect } from 'react';
+import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {WebView} from 'react-native-webview';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { firebase } from '@react-native-firebase/functions'
 
 
 class MyTokenSignIn extends Component {
@@ -13,6 +15,7 @@ class MyTokenSignIn extends Component {
     return(
       <View style={styles.container} >
         <Text>Made it here.</Text>
+        
       </View>
     );
   }
@@ -24,53 +27,11 @@ class MyWeb extends Component {
   successURL = 'https://example.com/oauth_complete&state=YYY&scope=<value_1>%20<value_2>%20<value_n>';
 
   render() {
-    return (
       <WebView
         ref={(ref) => (this.webview = ref)}
         source={{ uri: this.authURL }}
-        //onNavigationStateChange={this.handleWebViewNavigationStateChange}
       />
-    );
   }
-
-    /*
-      !!!! This was going to be used for the developer key. On backorder for now. !!!!!!
-    */
-//   handleWebViewNavigationStateChange = (newNavState) => {
-//     // newNavState looks something like this:
-//     // {
-//     //   url?: string;
-//     //   title?: string;
-//     //   loading?: boolean;
-//     //   canGoBack?: boolean;
-//     //   canGoForward?: boolean;
-//     // }
-//     const { url } = newNavState;
-//     if (!url) return;
-
-//     // handle certain doctypes
-//     if (url.includes(this.successURL)) {
-//       naviagtion.navigate('Profile');
-//     }
-
-//     // one way to handle a successful form submit is via query strings
-//     if (url.includes('?message=success')) {
-//       this.webview.stopLoading();
-//       // maybe close this view?
-//     }
-
-//     // one way to handle errors is via query string
-//     if (url.includes('?errors=true')) {
-//       this.webview.stopLoading();
-//     }
-
-//     // redirect somewhere else
-//     if (url.includes('google.com')) {
-//       const newURL = 'https://reactnative.dev/';
-//       const redirectTo = 'window.location = "' + newURL + '"';
-//       this.webview.injectJavaScript(redirectTo);
-//     }
-//   };
  }
 
 
@@ -81,23 +42,6 @@ const SignInScreen = ({navigation}) => {
   return (
     <View style = {styles.container}>
       <View ><Text style={styles.inputView}>Sign-in to your Canvas!</Text></View>
-      {/* <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="ClientID"
-          placeholderTextColor="#003f5c"
-          onChangeText={(clientID) => setClientID(clientID) }
-        />
-      </View>
-      <View style={styles.inputView}>
-        <TextInput
-          style = {styles.TextInput}
-          placeholder="ClientSecret"
-          placeHolderTextColer = "#003f5c"
-          secureTextEntry={true}
-          onChangeText={ (clientSecret) => setClientSecret(clientSecret)}
-        />
-      </View> */}
       <Button title="Sign in" onPress={() => navigation.navigate('CanvasPersonalSignIn')} />
     </View>
   );
