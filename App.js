@@ -7,15 +7,25 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {WebView} from 'react-native-webview';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { firebase } from '@react-native-firebase/functions'
+import {firebase, functions} from '@react-native-firebase/functions'
 
 
-class MyTokenSignIn extends Component {
-  render() {
+const MyTokenSignIn = ({naviagtion}) => {
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    functions().httpsCallable('listProducts')().then(response => {
+      setProducts(response.data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (!loading){
     return(
       <View style={styles.container} >
         <Text>Made it here.</Text>
-        
+        <Text>{products}</Text>
       </View>
     );
   }
