@@ -1,34 +1,41 @@
 //import * as React from 'react';
 import React, { Component } from 'react';
 import { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
+import { Button, StyleSheet, Text, View, FlatList, TextInput } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {WebView} from 'react-native-webview';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import {firebase, functions} from '@react-native-firebase/functions'
+import {firebase, functions} from '@react-native-firebase/functions';
 
 
-const MyTokenSignIn = ({naviagtion}) => {
+const MyTokenSignIn = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const {id, password, token} = route.params;
+  const clientID = id.clientID;
+  const clientPassword = password.clientSecret;
+  const clientToken = token.clientToken;
 
   useEffect(() => {
-    functions().httpsCallable('listProducts')().then(response => {
-      setProducts(response.data);
-      setLoading(false);
-    });
+    setLoading(false);
+    // functions().httpsCallable('listProducts')().then(response => {
+    //   setProducts(response.data);
+    //   setLoading(false);
+    // });
   }, []);
 
   if (!loading){
     return(
       <View style={styles.container} >
         <Text>Made it here.</Text>
-        <Text>{products}</Text>
+        <Text>id: {JSON.stringify(clientID)}</Text>
+        <Text>id: {JSON.stringify(clientPassword)}</Text>
+        <Text>id: {JSON.stringify(clientToken)}</Text>
       </View>
     );
-  }
+  } 
 }
 
 class MyWeb extends Component {
@@ -47,12 +54,40 @@ class MyWeb extends Component {
 
 //Commented out sections from a scrapped email and password sign-in screen. Pretty sure that will not be needed
 const SignInScreen = ({navigation}) => {
-  // const [clientID, setClientID] = useState('');
-  // const [clientSecret, setClientSecret] = useState('');
+  const [clientID, setClientID] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
+  const [clientToken, setClientToken] = useState('');
+
   return (
     <View style = {styles.container}>
       <View ><Text style={styles.inputView}>Sign-in to your Canvas!</Text></View>
-      <Button title="Sign in" onPress={() => navigation.navigate('CanvasPersonalSignIn')} />
+      <View style={styles.inputView}>
+        <TextInput
+        //style={styles.textInput}
+        placeholder="ID"
+        placeholderTextColor="#003f5c"
+        onChangeText={(clientID) => setClientID(clientID)}
+        />
+      </View>
+      <View style={styles.inputView}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Password"
+          placeholderTextColor="#003f5c"
+          secureTextEntry={true}
+          onChangeText={(clientSecret) => setClientSecret(clientSecret)}
+        />
+      </View>
+      <View style={styles.inputView}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Token"
+          placeholderTextColor="#003f5c"
+          secureTextEntry={true}
+          onChangeText={(clientToken) => setClientToken(clientToken)}
+        />
+      </View>
+      <Button title="Sign in" onPress={() => navigation.navigate('CanvasPersonalSignIn', { id: {clientID} , password: {clientSecret}, token: {clientToken}})} />
     </View>
   );
 }
@@ -100,7 +135,7 @@ export default App;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "ffff",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -114,8 +149,10 @@ const styles = StyleSheet.create({
     backgroundCoor: "#FF1493"
   },
   inputView: {
+    backgroundColor: "#FF7F",
     borderRadius: 30,
     width: "70%",
+    height: 45,
     marginBottom: 20,
     alignItems: "center",
   },
@@ -123,6 +160,6 @@ const styles = StyleSheet.create({
     height: 50,
     flex: 1,
     padding: 10,
-    marginLeft: 20,
+    marginLeft: 25,
   }
 });
